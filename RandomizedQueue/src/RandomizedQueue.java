@@ -1,7 +1,7 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
-
+import edu.princeton.cs.algs4.StdRandom;//download the  jar file from  https://algs4.cs.princeton.edu/code/ to get access
 public class RandomizedQueue<DataType> implements  Iterable<DataType>
 {
     //linked list class 
@@ -167,10 +167,25 @@ public class RandomizedQueue<DataType> implements  Iterable<DataType>
     }
     private class RandomizedIterable implements Iterator<DataType>
     {
-        Node current=first;
+        DataType dataType[];
+
+        {
+            Node temp=first;
+            int i=0;
+            dataType= (DataType[]) new Object[size()];
+            while(temp!=null)
+                {
+                    dataTypes[i++]=temp.data;
+                    temp=temp.next;
+                }
+            StdRandom.shuffle(dataTypes);
+                
+                
+        }
+        int current=0;
         @Override
         public boolean hasNext() {
-            return current!=null;
+            return current!=size();
         }
 
         public void remove() throws UnsupportedOperationException
@@ -182,14 +197,17 @@ public class RandomizedQueue<DataType> implements  Iterable<DataType>
         @Override
         public DataType next() throws NoSuchElementException
         {
-            if(current==null)
+            if(current==size())
             {
                 throw new NoSuchElementException();
             }
             //incomplete cause it has to return random data for call 
-            DataType data=current.data;
-            current=current.next;
-            return data;
+            // DataType data=current.data;
+            // current=current.next;
+            // return data;
+            //Implemented 
+             return dataTypes[current++];
+            
         }
     }
 
