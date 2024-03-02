@@ -1,56 +1,64 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
-import edu.princeton.cs.algs4.StdRandom;//download the  jar file from  https://algs4.cs.princeton.edu/code/ to get access
-public class RandomizedQueue<DataType> implements  Iterable<DataType>
+
+import edu.princeton.cs.algs4.StdRandom;
+
+public class RandomizedQueue<Item> implements  Iterable<Item>
 {
-    //linked list class 
+
+
+    //private class node
     private class Node
     {
         //attributes
-        DataType data;
+        Item data;
         Node next;
 
     }
-    //attrin=butes
+    //attributes
     private Node first;
     private Node last;
+
+
     private int size;
 
 
-    /* constructor*/
+
     public RandomizedQueue()
     {
+
         super();
     }
 
 
-    //checking linked list exists
-    //
+    //checking for the size
     public boolean isEmpty()
     {
-        return size==0;
+
+        return size == 0;
     }
 
-    //size of the linked list 
-    //makes the note for each operation performed
+
     public int size()
     {
         return size;
     }
 
-    //insertion at end 
-    //insertion can be in any way either at first or at last 
-    public void enqueue(DataType data) throws IllegalArgumentException
+
+    //inserting the element at the end
+
+    public void enqueue(Item data)
     {
-        //if the user enter no data 
-        if(data==null)
+        //if the data is invalid
+        if (data == null)
             throw new IllegalArgumentException();
         else
         {
-            //inerstion at last
+            //creating the node obj for data
             Node node = new Node();
+            //inserting the data value
             node.data = data;
+            //insertion is  first
             if (first == null) {
                 first = node;
                 last = node;
@@ -63,48 +71,39 @@ public class RandomizedQueue<DataType> implements  Iterable<DataType>
     }
 
 
-    //removing the random data from the linked list
-    public DataType dequeue() throws NoSuchElementException
+    //deleting the node from the random number generation
+    public Item dequeue()
     {
-        //observations 
-        if(size==0)
+        //no elements in the linked list
+        if (size == 0)
             throw new NoSuchElementException();
-        //if the size itself is 1 no need to generate random number 
-        else if(size==1)
+        else if (size == 1)
         {
-            DataType data=first.data;
-            size=0;
-            first=null;
-            last=null;
+            Item data = first.data;
+            size = 0;
+            first = null;
+            last = null;
             return data;
         }
-         //rando data is to be displayed    
         else
         {
-            
             Node temp = first;
-            //generating random number from the Random class and method is nextInt method
-            int random=new Random().nextInt(size-1);
-            //if the generated random number itself is 0 
-            //then no need to iterate over the lniked list
-            if(random==0)
+            int random = StdRandom.uniformInt(size);
+
+            if (random == 0)
             {
-                //deletion at first
-                first=first.next;
-                temp.next=null;
+                first = first.next;
+                temp.next = null;
                 size--;
                 return temp.data;
             }
             else
             {
-                //if the random number ist at intermediatory or last position
                 int count = 0;
-                //loop until the prev node
                 while (count != random - 1) {
                     temp = temp.next;
                     count++;
                 }
-                //deletd node 
                 Node deleted = temp.next;
                 temp.next = deleted.next;
                 deleted.next = null;
@@ -116,38 +115,31 @@ public class RandomizedQueue<DataType> implements  Iterable<DataType>
 
     }
 
-    //displaying the random linked list data 
-    public DataType sample() throws NoSuchElementException
+
+    public Item sample()
     {
-        //linked list is empty 
-        if(size==0)
+        if (size == 0)
             throw new NoSuchElementException();
-        //list has only one node
-        if(size==1)
+        if (size == 1)
         {
             return first.data;
         }
         else
         {
-            //generating the random number to display the data
-            Node temp=first;
-            int random=new Random().nextInt(size-1);
-           //display the first node data
-            if(random==0)
+            Node temp = first;
+            int random = StdRandom.uniformInt(size);
+            if (random == 0)
             {
                 return temp.data;
             }
             else
             {
-                //if the random is not generated
-                int count=0;
-                //until prev node
-                while(count!=random)
+                int count = 0;
+                while (count != random)
                 {
-                    temp=temp.next;
+                    temp = temp.next;
                     count++;
                 }
-                
             }
             return temp.data;
         }
@@ -158,61 +150,63 @@ public class RandomizedQueue<DataType> implements  Iterable<DataType>
 
 
     @Override
-    public Iterator<DataType> iterator()
+    public Iterator<Item> iterator()
 
     {
         return new RandomizedIterable();
 
 
     }
-    private class RandomizedIterable implements Iterator<DataType>
+    private class RandomizedIterable implements Iterator<Item>
     {
-        DataType dataType[];
+
+        Item dataTypes[] = (Item[])new Object[size()];
 
         {
-            Node temp=first;
-            int i=0;
-            dataType= (DataType[]) new Object[size()];
-            while(temp!=null)
-                {
-                    dataTypes[i++]=temp.data;
-                    temp=temp.next;
-                }
+
+            Node temp = first;
+            int i = 0;
+            while (temp != null) {
+                dataTypes[i++] = temp.data;
+                temp = temp.next;
+            }
             StdRandom.shuffle(dataTypes);
-                
-                
+
         }
-        int current=0;
+
+        int current = 0;
+
+        private RandomizedIterable() {
+        }
+
         @Override
         public boolean hasNext() {
-            return current!=size();
+
+            return current != size();
         }
 
-        public void remove() throws UnsupportedOperationException
-        {
+        public void remove() {
             throw new UnsupportedOperationException();
         }
 
 
         @Override
-        public DataType next() throws NoSuchElementException
+        public Item next()
         {
-            if(current==size())
+            if (current == size())
             {
                 throw new NoSuchElementException();
             }
-            //incomplete cause it has to return random data for call 
-            // DataType data=current.data;
-            // current=current.next;
-            // return data;
-            //Implemented 
-             return dataTypes[current++];
-            
+            //incomplete
+            return dataTypes[current++];
+
+
         }
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
 
     }
 }
